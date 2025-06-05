@@ -1,37 +1,36 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function AboutMe() {
   const sectionRef = useRef(null);
-  const [opacity, setOpacity] = useState(1);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const section = sectionRef.current;
-      if (!section) return;
+  // Use Framer Motion's useScroll to track scroll progress
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"] // Track from when section enters to when it leaves
+  });
 
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
+  // Transform scroll progress for smooth opacity (1 to 0)
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0]);
 
-      // Calculate how far the section has moved off screen
-      const distanceFromTop = Math.abs(rect.top);
-      const fadeDistance = windowHeight / 2; // Start fading after half screen
+  // Transform scroll progress for mobile: subtle upward movement and scale
+  const mobileTransform = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    ["translateY(20px) scale(0.95)", "translateY(0px) scale(1)", "translateY(-20px) scale(1.05)"]
+  );
 
-      let newOpacity = 1 - distanceFromTop / fadeDistance;
-      newOpacity = Math.max(newOpacity, 0);
-      setOpacity(newOpacity);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Detect mobile for conditional transform
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   return (
-    <div
+    <motion.div
       ref={sectionRef}
-      style={{ opacity }}
-      className="transition-opacity duration-300 ease-out h-screen snap-start w-full flex flex-col md:flex-row items-center justify-center px-5 md:px-10 max-w-6xl mx-auto gap-8"
+      style={{ opacity, ...(isMobile ? { transform: mobileTransform } : {}) }}
+      className="h-screen snap-start w-full flex flex-col md:flex-row items-center justify-center px-5 md:px-10 max-w-6xl mx-auto gap-8"
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {/* Title - Mobile */}
       <div className="order-1 md:order-none w-full md:hidden text-center font-robotoFlex">
@@ -62,13 +61,13 @@ export default function AboutMe() {
       {/* Right Side - Image */}
       <div className="order-2 flex-1 flex justify-center items-center w-full md:w-auto">
         <Image
-          src="./MySelf.jpeg"
+          src="/MySelf.jpeg"
           alt="Yogesh Rane"
           width={400}
           height={400}
           className="rounded-lg shadow-lg object-cover w-full sm:w-auto"
         />
       </div>
-    </div>
+    </motion.div>
   );
 }
