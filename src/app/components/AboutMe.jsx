@@ -62,7 +62,7 @@ export default function AboutMe() {
       {/* Right Side - Image */}
       <div className="order-2 flex-1 flex justify-center items-center w-full md:w-auto">
         <Image
-          src="./portfolio/MySelf.jpeg"
+          src="./MySelf.jpeg"
           alt="Yogesh Rane"
           width={400}
           height={400}
