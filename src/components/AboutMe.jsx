@@ -44,7 +44,7 @@ export default function AboutMe() {
         <h1 className="hidden md:block text-5xl font-bold mb-6 text-gray-900 dark:text-white">
           Little Bit <br className="hidden md:block" /> About Me!
         </h1>
-        <p className="text-base md:text-lg text-gray-700 dark:text-gray-300">
+        <p className="text-base md:text-lg text-white dark:text-white">
           Hi, I’m Yogesh Rane — a passionate web developer specializing in
           building modern, responsive websites and applications. I enjoy
           crafting clean, efficient code and creating user-friendly experiences.
