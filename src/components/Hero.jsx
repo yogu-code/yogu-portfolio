@@ -19,7 +19,7 @@ export default function Hero() {
     <motion.div
       ref={sectionRef}
       style={{ opacity }}
-      className="snap-start relative flex flex-col gap-6 sm:gap-8 items-center justify-center px-6 sm:px-8 h-screen w-full min-h-screen bg-zinc-50 dark:bg-zinc-900"
+      className="snap-start relative flex flex-col gap-6 sm:gap-8 items-center justify-center px-6 sm:px-8 h-screen w-full min-h-screen"
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
       <div className="text-4xl sm:text-5xl md:text-7xl font-bold dark:text-white text-center font-robotoFlex">

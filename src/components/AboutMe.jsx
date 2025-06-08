@@ -41,7 +41,7 @@ export default function AboutMe() {
 
       {/* Left Side - Text */}
       <div className="order-3 md:order-1 flex-1 max-w-md md:pr-10 flex flex-col justify-center text-center md:text-left font-robotoFlex">
-        <h1 className="hidden md:block text-5xl font-bold mb-6">
+        <h1 className="hidden md:block text-5xl font-bold mb-6 text-gray-900 dark:text-white">
           Little Bit <br className="hidden md:block" /> About Me!
         </h1>
         <p className="text-base md:text-lg text-gray-700 dark:text-gray-300">
