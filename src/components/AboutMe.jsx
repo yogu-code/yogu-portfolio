@@ -9,7 +9,7 @@ export default function AboutMe() {
   // Use Framer Motion's useScroll to track scroll progress
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"] // Track from when section enters to when it leaves
+    offset: ["start end", "end start"], // Track from when section enters to when it leaves
   });
 
   // Transform scroll progress for smooth opacity (1 to 0)
@@ -19,7 +19,11 @@ export default function AboutMe() {
   const mobileTransform = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
-    ["translateY(20px) scale(0.95)", "translateY(0px) scale(1)", "translateY(-20px) scale(1.05)"]
+    [
+      "translateY(20px) scale(0.95)",
+      "translateY(0px) scale(1)",
+      "translateY(-20px) scale(1.05)",
+    ]
   );
 
   // Detect mobile for conditional transform
@@ -29,20 +33,26 @@ export default function AboutMe() {
     <motion.div
       ref={sectionRef}
       style={{ opacity, ...(isMobile ? { transform: mobileTransform } : {}) }}
-      className="h-screen snap-start w-full flex flex-col md:flex-row items-center justify-center px-5 md:px-10 max-w-6xl mx-auto gap-8"
+      className="h-screen snap-start w-full flex flex-col md:flex-row items-center justify-center px-5 md:px-10 max-w-6xl mx-auto gap-8 mb-20 md:mb-0"
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {/* Title - Mobile */}
       <div className="order-1 md:order-none w-full md:hidden text-center font-robotoFlex">
-        <h1 className="text-4xl font-bold mb-6">
-          Little Bit <br /> About Me!
+        <h1 className="text-4xl font-bold mb-6 text-white">
+          Little Bit <br />{" "}
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">
+            About Me!
+          </span>
         </h1>
       </div>
 
       {/* Left Side - Text */}
       <div className="order-3 md:order-1 flex-1 max-w-md md:pr-10 flex flex-col justify-center text-center md:text-left font-robotoFlex">
-        <h1 className="hidden md:block text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-          Little Bit <br className="hidden md:block" /> About Me!
+        <h1 className="hidden md:block text-5xl font-bold mb-6 text-white">
+          Little Bit <br className="hidden md:block" />{" "}
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">
+            About Me!
+          </span>
         </h1>
         <p className="text-base md:text-lg text-white dark:text-white">
           Hi, I’m Yogesh Rane — a passionate web developer specializing in
