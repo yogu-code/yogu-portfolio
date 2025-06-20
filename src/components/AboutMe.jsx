@@ -70,7 +70,13 @@ export default function AboutMe() {
 
       {/* Right Side - Image */}
       <div className="order-2 flex-1 flex justify-center items-center w-full md:w-auto">
-        <img src="/images/MySelf.jpeg" alt="MySelf" />
+        <Image
+          src="/images/MySelf.jpeg"
+          alt="Yogesh Rane"
+          width={600}
+          height={600}
+          className="rounded-lg shadow-lg object-cover"
+        />
       </div>
     </motion.div>
   );
