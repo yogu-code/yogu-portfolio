@@ -2,7 +2,8 @@
 const nextConfig = {
   basePath: "/portfolio",
   images: {
-    unoptimized: true, // Disable image optimization for static export
+    unoptimized: true, // Required for static export
   },
+  output: "export", // Add this line for static export
 };
 export default nextConfig;
