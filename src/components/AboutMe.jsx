@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import image from "../images/MySelf.jpeg"; // Adjust the path as necessary
 
 export default function AboutMe() {
   const sectionRef = useRef(null);
@@ -71,7 +72,7 @@ export default function AboutMe() {
       {/* Right Side - Image */}
       <div className="order-2 flex-1 flex justify-center items-center w-full md:w-auto">
         <Image
-          src="/images/MySelf.jpeg"
+          src={image}
           alt="Yogesh Rane"
           width={600}
           height={600}
