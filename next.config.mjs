@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+export const nextConfig = {
+  basePath: "/portfolio",
+  assetPrefix: "/portfolio/",
+  images: {
+    unoptimized: true, // Optional for GitHub Pages, as it doesn't support Next.js image optimization
+  },
 };
 
-export default nextConfig;
