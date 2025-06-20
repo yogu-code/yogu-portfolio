@@ -75,7 +75,7 @@ export default function AboutMe() {
           alt="Yogesh Rane"
           width={400}
           height={400}
-          className="rounded-lg shadow-lg object-cover w-full sm:w-auto"
+          className="rounded-lg shadow-lg object-cover"
         />
       </div>
     </motion.div>

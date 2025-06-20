@@ -3,8 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Bot, User, Send } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeSanitize from 'rehype-sanitize';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+// Import highlight.js styles for code syntax highlighting
+import 'highlight.js/styles/github.css';
 
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +19,7 @@ export default function ChatbotWidget() {
   const [lastActivityTime, setLastActivityTime] = useState(Date.now());
   const inactivityTimerRef = useRef(null);
   const router = useRouter();
-  
+
   const INACTIVITY_TIMEOUT = 120000; // 2 minutes in milliseconds
   const INACTIVITY_CHECK_INTERVAL = 10000; // Check every 10 seconds
 
@@ -23,7 +28,9 @@ export default function ChatbotWidget() {
   // Function to fetch bot response from the API
   const fetchBotResponse = async (userMessage) => {
     try {
-      const response = await fetch('http://localhost:5000/chat', {
+      const backendUrl = process.env.NEXT_PUBLIC_CHATBOT_BACKEND;
+      console.log('API URL:', backendUrl);
+      const response = await fetch(`${backendUrl}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage }),
@@ -31,7 +38,7 @@ export default function ChatbotWidget() {
 
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
-      return data.reply;
+      return data.reply; // Expecting Markdown-formatted response
     } catch (error) {
       console.error('Error fetching bot response:', error);
       return 'Sorry, I encountered an error while processing your request.';
@@ -41,10 +48,10 @@ export default function ChatbotWidget() {
   // Function to handle sending a message
   const handleSend = async () => {
     if (input.trim() === '') return;
-    
+
     // Record user activity
     recordUserActivity();
-    
+
     setMessages([...messages, { text: input, sender: 'user' }]);
     setInput('');
     setBotTyping(true);
@@ -58,16 +65,22 @@ export default function ChatbotWidget() {
 
   // Function to send inactivity message
   const sendInactivityMessage = () => {
-    // Only send if chat is open and we haven't just sent an inactivity message
-    // Check if the last message was from the bot
     const lastMessage = messages[messages.length - 1];
-    if (!isOpen || !lastMessage || 
-        (lastMessage.sender === 'bot' && 
-         lastMessage.text.includes('Are you still there?'))) {
+    if (
+      !isOpen ||
+      !lastMessage ||
+      (lastMessage.sender === 'bot' &&
+        lastMessage.text.includes('Are you still there?'))
+    ) {
       return;
     }
-    
-    const inactivityMessage = "Are you still there? I'm here if you have any questions!";
+
+    const inactivityMessage = `
+Are you still there? I'm here to help! Try asking:
+
+- **What can you do?**
+- **Tell me about xAI**
+    `;
     setMessages((prev) => [...prev, { text: inactivityMessage, sender: 'bot' }]);
   };
 
@@ -79,29 +92,24 @@ export default function ChatbotWidget() {
   // Set up inactivity timer
   useEffect(() => {
     if (isOpen) {
-      // Clear any existing timer
       if (inactivityTimerRef.current) {
         clearInterval(inactivityTimerRef.current);
       }
-      
-      // Set new interval to check for inactivity
+
       inactivityTimerRef.current = setInterval(() => {
         const now = Date.now();
         if (now - lastActivityTime >= INACTIVITY_TIMEOUT) {
           sendInactivityMessage();
-          // Reset the activity timer after sending inactivity message
           setLastActivityTime(now);
         }
       }, INACTIVITY_CHECK_INTERVAL);
     } else {
-      // Clear timer when chat is closed
       if (inactivityTimerRef.current) {
         clearInterval(inactivityTimerRef.current);
         inactivityTimerRef.current = null;
       }
     }
-    
-    // Cleanup function
+
     return () => {
       if (inactivityTimerRef.current) {
         clearInterval(inactivityTimerRef.current);
@@ -109,7 +117,7 @@ export default function ChatbotWidget() {
     };
   }, [isOpen, lastActivityTime, messages]);
 
-  // Add event listeners for user activity when the component mounts
+  // Add event listeners for user activity
   useEffect(() => {
     const handleActivity = () => {
       if (isOpen) {
@@ -117,12 +125,10 @@ export default function ChatbotWidget() {
       }
     };
 
-    // User interactions that count as activity
     window.addEventListener('keydown', handleActivity);
     window.addEventListener('mousedown', handleActivity);
     window.addEventListener('touchstart', handleActivity);
-    
-    // Cleanup function to remove event listeners
+
     return () => {
       window.removeEventListener('keydown', handleActivity);
       window.removeEventListener('mousedown', handleActivity);
@@ -139,13 +145,13 @@ export default function ChatbotWidget() {
 
   // Handle chat button click
   const handleChatButtonClick = () => {
-    recordUserActivity(); // Record activity
+    recordUserActivity();
     setIsOpen(!isOpen);
   };
 
   return (
     <>
-      {/* Chat Widget Box - Using responsive design that keeps desktop UI style on mobile */}
+      {/* Chat Widget Box */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -160,7 +166,7 @@ export default function ChatbotWidget() {
                        lg:w-[32rem]"
             onClick={recordUserActivity}
           >
-            {/* Content container with padding */}
+            {/* Content container */}
             <div className="flex flex-col h-full">
               {/* Heading */}
               <div className="px-4 pt-4 pb-2 sm:px-5 sm:pt-6 sm:pb-3">
@@ -179,7 +185,7 @@ export default function ChatbotWidget() {
                   </button>
                 </div>
               </div>
-              
+
               {/* Messages */}
               <div className="flex-1 px-3 py-2 sm:px-4 sm:py-3 overflow-y-auto space-y-3 custom-scrollbar">
                 <AnimatePresence initial={false}>
@@ -207,7 +213,39 @@ export default function ChatbotWidget() {
                               : 'bg-white text-gray-700'
                           }`}
                         >
-                          <ReactMarkdown>{msg.text}</ReactMarkdown>
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeHighlight, rehypeSanitize]}
+                            components={{
+                              code({ node, inline, className, children, ...props }) {
+                                return inline ? (
+                                  <code className="bg-gray-100 px-1 rounded text-red-600" {...props}>
+                                    {children}
+                                  </code>
+                                ) : (
+                                  <pre className="bg-gray-100 p-2 rounded overflow-x-auto">
+                                    <code className={className} {...props}>
+                                      {children}
+                                    </code>
+                                  </pre>
+                                );
+                              },
+                              a({ href, children }) {
+                                return (
+                                  <a
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 hover:underline"
+                                  >
+                                    {children}
+                                  </a>
+                                );
+                              },
+                            }}
+                          >
+                            {msg.text}
+                          </ReactMarkdown>
                         </div>
                         {isUser && (
                           <div className="flex-shrink-0 mt-1 bg-purple-500 p-1.5 rounded-full shadow-sm">
@@ -249,7 +287,7 @@ export default function ChatbotWidget() {
                     value={input}
                     onChange={(e) => {
                       setInput(e.target.value);
-                      recordUserActivity(); // Record activity when typing
+                      recordUserActivity();
                     }}
                     placeholder="Type a message..."
                     className="flex-1 px-3 py-2 rounded-xl bg-white border border-gray-100 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-transparent transition-all duration-200 shadow-sm"
@@ -275,10 +313,11 @@ export default function ChatbotWidget() {
           onClick={handleChatButtonClick}
           className="bg-white p-3 rounded-full shadow-lg transition-all duration-300 border border-gray-100"
         >
-          {isOpen ?
-            <X className="w-4 h-4 text-gray-600" /> : 
+          {isOpen ? (
+            <X className="w-4 h-4 text-gray-600" />
+          ) : (
             <Bot className="w-5 h-5 text-purple-500" />
-          }
+          )}
         </motion.button>
       </div>
 
@@ -323,6 +362,38 @@ export default function ChatbotWidget() {
 
         .animate-gradient {
           animation: gradientBG 5s ease infinite;
+        }
+
+        /* Markdown-specific styles */
+        .markdown-content {
+          line-height: 1.5;
+        }
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3 {
+          font-weight: 600;
+          margin: 0.5em 0;
+        }
+        .markdown-content ul,
+        .markdown-content ol {
+          margin: 0.5em 0;
+          padding-left: 1.5em;
+        }
+        .markdown-content li {
+          margin-bottom: 0.25em;
+        }
+        .markdown-content a {
+          color: #3b82f6;
+          text-decoration: underline;
+        }
+        .markdown-content code {
+          font-family: 'Courier New', Courier, monospace;
+        }
+        .markdown-content pre {
+          background-color: #f7fafc;
+          padding: 0.5em;
+          border-radius: 0.5em;
+          overflow-x: auto;
         }
       `}</style>
     </>
