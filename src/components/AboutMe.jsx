@@ -38,9 +38,9 @@ export default function AboutMe() {
     >
       {/* Title - Mobile */}
       <div className="order-1 md:order-none w-full md:hidden text-center font-robotoFlex">
-        <h1 className="text-4xl font-bold mb-6 text-white">
+        <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
           Little Bit <br />{" "}
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 dark:from-blue-300 dark:via-purple-300 dark:to-cyan-300">
             About Me!
           </span>
         </h1>
@@ -48,13 +48,13 @@ export default function AboutMe() {
 
       {/* Left Side - Text */}
       <div className="order-3 md:order-1 flex-1 max-w-md md:pr-10 flex flex-col justify-center text-center md:text-left font-robotoFlex">
-        <h1 className="hidden md:block text-5xl font-bold mb-6 text-white">
+        <h1 className="hidden md:block text-5xl font-bold mb-6 text-gray-900 dark:text-white">
           Little Bit <br className="hidden md:block" />{" "}
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 dark:from-blue-300 dark:via-purple-300 dark:to-cyan-300">
             About Me!
           </span>
         </h1>
-        <p className="text-base md:text-lg text-white dark:text-white">
+        <p className="text-base md:text-lg text-gray-800 dark:text-gray-100">
           Hi, I’m Yogesh Rane — a passionate web developer specializing in
           building modern, responsive websites and applications. I enjoy
           crafting clean, efficient code and creating user-friendly experiences.
@@ -73,8 +73,8 @@ export default function AboutMe() {
         <Image
           src="/MySelf.jpeg"
           alt="Yogesh Rane"
-          width={400}
-          height={400}
+          width={600}
+          height={600}
           className="rounded-lg shadow-lg object-cover"
         />
       </div>
