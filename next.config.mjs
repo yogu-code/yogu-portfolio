@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: "/portfolio",
-  assetPrefix: "/portfolio/",
+  experimental: {
+    appDir: true,
+  },
+  distDir: "out",
+  output: "export",
   images: {
-    unoptimized: true,
+    loader: "custom",
+    loaderFile: './ImageLoader.js'
   },
 };
 export default nextConfig;
