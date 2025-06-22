@@ -76,11 +76,8 @@ export default function ChatbotWidget() {
     }
 
     const inactivityMessage = `
-Are you still there? I'm here to help! Try asking:
-
-- **What can you do?**
-- **Tell me about xAI**
-    `;
+Are you still there? I'm here to help!
+`;
     setMessages((prev) => [...prev, { text: inactivityMessage, sender: 'bot' }]);
   };
 
