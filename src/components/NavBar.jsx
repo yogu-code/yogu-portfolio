@@ -9,10 +9,11 @@ import {
   MobileNavHeader,
   MobileNavToggle,
   MobileNavMenu,
+  ContactDropdown, // Add this import
 } from "@/components/ui/resizable-navbar";
 import { useState } from "react";
 
-export default function NavbarDemo({ children }){
+export default function NavbarDemo({ children }) {
   const navItems = [
     {
       name: "About Me",
@@ -30,6 +31,15 @@ export default function NavbarDemo({ children }){
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Your contact information - update with your actual details
+  const contactInfo = {
+    email: "yogeshrane019@gmail.com",
+    phone: "+91 8779269045",
+    linkedin: "https://linkedin.com/in/yogesh-rane-503226345/",
+    github: "https://github.com/yogu-code",
+    location: "Mumbai, India"
+  };
+
   return (
     <div className="relative w-full">
       <Navbar>
@@ -38,7 +48,8 @@ export default function NavbarDemo({ children }){
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="primary">Contact Me</NavbarButton>
+            {/* Replace NavbarButton with ContactDropdown for desktop */}
+            <ContactDropdown contactInfo={contactInfo} />
           </div>
         </NavBody>
 
@@ -67,13 +78,23 @@ export default function NavbarDemo({ children }){
               </a>
             ))}
             <div className="flex w-full flex-col gap-4">
-              <NavbarButton
+              {/* For mobile, you can either use ContactDropdown or keep the simple button */}
+              {/* Option 1: Use ContactDropdown on mobile too */}
+              <ContactDropdown 
+                contactInfo={contactInfo} 
+                className="w-full"
+              />
+              
+              {/* Option 2: Keep simple button for mobile (comment out the above and uncomment below) */}
+              
+              {/* <NavbarButton
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full"
               >
                 Contact Me
-              </NavbarButton>
+              </NavbarButton> */}
+             
             </div>
           </MobileNavMenu>
         </MobileNav>
