@@ -40,13 +40,41 @@ export default function NavbarDemo({ children }) {
     location: "Mumbai, India"
   };
 
+  // Smooth scroll function
+  const smoothScrollTo = (elementId) => {
+    const element = document.getElementById(elementId.replace('#', ''));
+    if (element) {
+      const navbarHeight = 100; // Adjust this value based on your navbar height
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Handle nav item click
+  const handleNavItemClick = (e, link) => {
+    e.preventDefault();
+    smoothScrollTo(link);
+    setIsMobileMenuOpen(false); // Close mobile menu if open
+  };
+
   return (
     <div className="relative w-full">
       <Navbar>
         {/* Desktop Navigation */}
         <NavBody>
           <NavbarLogo />
-          <NavItems items={navItems} />
+          <NavItems 
+            items={navItems} 
+            onItemClick={(e) => {
+              const link = e.currentTarget.getAttribute('href');
+              handleNavItemClick(e, link);
+            }}
+          />
           <div className="flex items-center gap-4">
             {/* Replace NavbarButton with ContactDropdown for desktop */}
             <ContactDropdown contactInfo={contactInfo} />
@@ -71,8 +99,8 @@ export default function NavbarDemo({ children }) {
               <a
                 key={`mobile-link-${idx}`}
                 href={item.link}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="relative text-neutral-600 dark:text-neutral-300"
+                onClick={(e) => handleNavItemClick(e, item.link)}
+                className="relative text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors duration-200"
               >
                 <span className="block">{item.name}</span>
               </a>

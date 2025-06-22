@@ -1,5 +1,7 @@
+"use client";
 import React from "react";
 import { Github, ExternalLink, Calendar, Code } from "lucide-react";
+import { motion } from "framer-motion";
 
 const ProjectCard = ({
   image,
@@ -10,6 +12,7 @@ const ProjectCard = ({
   liveUrl,
   date = "2024",
   status = "Completed",
+  index = 0,
 }) => {
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -24,20 +27,136 @@ const ProjectCard = ({
     }
   };
 
+  // Animation variants for the card
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      y: 50,
+      scale: 0.9,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        delay: index * 0.1, // Stagger animation based on index
+        ease: [0.25, 0.46, 0.45, 0.94], // Custom easing
+      },
+    },
+  };
+
+  // Hover animation variants
+  const hoverVariants = {
+    hover: {
+      y: -8,
+      scale: 1.02,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  // Image animation variants
+  const imageVariants = {
+    hidden: { scale: 1.1, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        delay: index * 0.1 + 0.2,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  // Content animation variants
+  const contentVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay: index * 0.1 + 0.3,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  // Button animation variants
+  const buttonVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        delay: index * 0.1 + 0.5,
+        ease: "easeOut",
+      },
+    },
+    hover: {
+      scale: 1.05,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut",
+      },
+    },
+    tap: {
+      scale: 0.95,
+    },
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden w-full hover:shadow-xl transition-shadow duration-300">
+    <motion.div
+      className="bg-white rounded-xl shadow-lg overflow-hidden w-full cursor-pointer"
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      whileHover="hover"
+      viewport={{ once: true, amount: 0.1 }}
+      custom={hoverVariants}
+    >
       {/* Image Section */}
-      <div className="relative w-full aspect-video bg-gradient-to-br from-blue-500 to-purple-600">
+      <div className="relative w-full aspect-video bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden">
         {image ? (
-          <img src={image} alt={title} className="w-full h-full object-cover" />
+          <motion.img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover"
+            variants={imageVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          />
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <motion.div
+            className="flex items-center justify-center h-full"
+            variants={imageVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             <Code className="w-16 h-16 text-white/80" />
-          </div>
+          </motion.div>
         )}
 
         {/* Status Badge */}
-        <div className="absolute top-3 right-3">
+        <motion.div
+          className="absolute top-3 right-3"
+          initial={{ opacity: 0, scale: 0 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.4,
+            delay: index * 0.1 + 0.4,
+            type: "spring",
+            stiffness: 200,
+          }}
+          viewport={{ once: true }}
+        >
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
               status
@@ -45,77 +164,147 @@ const ProjectCard = ({
           >
             {status}
           </span>
-        </div>
+        </motion.div>
       </div>
 
       {/* Content Section */}
-      <div className="p-6">
+      <motion.div
+        className="p-6"
+        variants={contentVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
         {/* Title and Date */}
         <div className="flex items-start justify-between mb-3">
-          <h3 className="text-xl font-semibold text-gray-900 flex-1">
+          <motion.h3
+            className="text-xl font-semibold text-gray-900 flex-1"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.1 + 0.4,
+            }}
+            viewport={{ once: true }}
+          >
             {title}
-          </h3>
-          <div className="flex items-center text-gray-500 text-sm ml-2">
+          </motion.h3>
+          <motion.div
+            className="flex items-center text-gray-500 text-sm ml-2"
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.1 + 0.45,
+            }}
+            viewport={{ once: true }}
+          >
             <Calendar className="w-4 h-4 mr-1" />
             {date}
-          </div>
+          </motion.div>
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm leading-relaxed mb-4">
+        <motion.p
+          className="text-gray-600 text-sm leading-relaxed mb-4"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: index * 0.1 + 0.5,
+          }}
+          viewport={{ once: true }}
+        >
           {description}
-        </p>
+        </motion.p>
 
         {/* Technologies */}
-        <div className="mb-6">
+        <motion.div
+          className="mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: index * 0.1 + 0.55,
+          }}
+          viewport={{ once: true }}
+        >
           <div className="flex flex-wrap gap-2">
-            {technologies.map((tech, index) => (
-              <span
-                key={index}
+            {technologies.map((tech, techIndex) => (
+              <motion.span
+                key={techIndex}
                 className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md font-medium"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.3,
+                  delay: index * 0.1 + 0.6 + techIndex * 0.05,
+                  type: "spring",
+                  stiffness: 200,
+                }}
+                whileHover={{
+                  scale: 1.1,
+                  backgroundColor: "#e5e7eb",
+                }}
+                viewport={{ once: true }}
               >
                 {tech}
-              </span>
+              </motion.span>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3">
+        <motion.div
+          className="flex gap-3"
+          variants={buttonVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {githubUrl && githubUrl !== "none" && (
-            <a
+            <motion.a
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
             >
               <Github className="w-4 h-4" />
               Code
-            </a>
+            </motion.a>
           )}
 
           {liveUrl && liveUrl !== "none" && (
-            <a
+            <motion.a
               href={liveUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
             >
               <ExternalLink className="w-4 h-4" />
               Live Demo
-            </a>
+            </motion.a>
           )}
 
           {(!githubUrl || githubUrl === "none") &&
             (!liveUrl || liveUrl === "none") && (
-              <div className="flex-1 flex items-center justify-center gap-2 bg-gray-400 text-white font-medium py-2 px-4 rounded-lg cursor-not-allowed">
+              <motion.div
+                className="flex-1 flex items-center justify-center gap-2 bg-gray-400 text-white font-medium py-2 px-4 rounded-lg cursor-not-allowed"
+                variants={buttonVariants}
+              >
                 <Code className="w-4 h-4" />
                 Coming Soon
-              </div>
+              </motion.div>
             )}
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -163,24 +352,90 @@ const App = () => {
     },
   ];
 
+  // Container animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  // Title animation variants
+  const titleVariants = {
+    hidden: { opacity: 0, y: -30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
     <div className="min-h-screen p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 tracking-tight">
+        <motion.div
+          className="text-center mb-12"
+          variants={titleVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <motion.h1
+            className="text-3xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 tracking-tight"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut",
+            }}
+            viewport={{ once: true }}
+          >
             My
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 dark:from-blue-400 dark:via-purple-400 dark:to-cyan-400">
+            <motion.span
+              className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 dark:from-blue-400 dark:via-purple-400 dark:to-cyan-400"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true }}
+            >
               Projects
-            </span>
-          </h1>
+            </motion.span>
+          </motion.h1>
 
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <motion.p
+            className="text-lg text-gray-600 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.6,
+              delay: 0.4,
+              ease: "easeOut",
+            }}
+            viewport={{ once: true }}
+          >
             Showcasing innovative projects built with modern technologies and
             best practices
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+        >
           {projects.map((project, index) => (
             <ProjectCard
               key={index}
@@ -192,9 +447,10 @@ const App = () => {
               liveUrl={project.liveUrl}
               date={project.date}
               status={project.status}
+              index={index}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
