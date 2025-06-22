@@ -168,9 +168,9 @@ const App = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 tracking-tight">
-            Technical
+            My
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600">
-              Expertise
+              Projects
             </span>
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
