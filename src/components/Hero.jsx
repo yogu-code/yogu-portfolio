@@ -26,7 +26,7 @@ export default function Hero() {
         Yogesh Rane
       </div>
       <div className="font-extralight text-xl sm:text-2xl md:text-4xl dark:text-neutral-200 py-6 sm:py-8 text-center font-robotoFlex">
-        Web developer
+        Full-Stack Developer
       </div>
     </motion.div>
   );
